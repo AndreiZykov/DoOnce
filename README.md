@@ -2,7 +2,7 @@
 
 under development
 
-open source android library that helps to run chunks of code one per application session, per time interval, version, etc
+open source android library that helps to run chunks of code once per application session, time interval, version, etc
 
 ```
 var index = 0
