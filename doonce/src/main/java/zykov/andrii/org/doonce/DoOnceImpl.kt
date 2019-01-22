@@ -2,7 +2,6 @@ package zykov.andrii.org.doonce
 
 import android.content.Context
 import android.support.annotation.NonNull
-import android.support.annotation.VisibleForTesting
 import java.util.*
 
 
@@ -110,6 +109,5 @@ class DoOnceImpl : DoOnce {
         } ?: run { function(Unit); mStateHash[tag] = DoOnceState(currentTime, interval, true) }
     }
 
-    @VisibleForTesting
     private class DoOnceState(var timestamp: Long, val interval: Long, val repeat: Boolean)
 }
