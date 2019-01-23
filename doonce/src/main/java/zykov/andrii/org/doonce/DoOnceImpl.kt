@@ -28,7 +28,7 @@ internal class DoOnceImpl : IDoOnce {
     private val mStateHash = HashMap<String, DoOnceState>()
 
     override fun perVersion(ctx: Context, tag: String, runnable: Runnable) {
-
+        perVersion(ctx, tag, null, runnable)
     }
 
     override fun perVersion(ctx: Context, tag: String, executor: Executor?, runnable: Runnable) {
