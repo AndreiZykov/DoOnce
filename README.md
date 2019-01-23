@@ -8,7 +8,7 @@ You'll need to have jcenter() in your list of repositories
 
 ```
 gradle:
---
+  compile 'org.andriizykov.doonce:doonce:0.1'
 ```
 
 ## Usage
