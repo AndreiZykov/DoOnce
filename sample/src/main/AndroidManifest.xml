@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="zykov.andrii.org.androiddispatcher">
+          xmlns:tools="http://schemas.android.com/tools" package="zykov.andrii.org.doonceexample">
 
     <application
             android:allowBackup="true"
@@ -9,7 +9,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity android:name="zykov.andrii.org.doonceexample.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

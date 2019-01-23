@@ -1,16 +1,19 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+version = "0.1"
+group = "org.andriizykov.doonce"
 
 android {
     compileSdkVersion 28
-
-
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -22,6 +25,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 
 }
 
@@ -35,6 +39,77 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'org.mockito:mockito-core:2.23.4'
 }
+
 repositories {
     mavenCentral()
+}
+
+
+install {
+    repositories.mavenInstaller {
+
+        pom {
+            project {
+                packaging 'aar'
+                name 'Super small Android library that helps to run chunks of code ones' +
+                        ' per application session, per time interval, version, etc. for API 14 and higher.'
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'paperjohn'
+                        name 'Andrii Zykov'
+                        email 'zykovwat2008@gmail.com'
+                    }
+                }
+                scm {
+                    connection 'https://github.com/AndreiZykov/DoOnce'
+                    developerConnection 'https://github.com/AndreiZykov/DoOnce'
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+tasks.withType(Javadoc) {
+    enabled = false
+}
+
+artifacts {
+//    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = 'doonce'
+        desc = 'open source android library that helps to run chunks of code ones' +
+                ' per application session, per time interval, version, etc'
+        vcsUrl = 'https://github.com/AndreiZykov/DoOnce'
+        licenses = ["Apache-2.0"]
+        dryRun = false
+        publish = true
+        override = false
+        publicDownloadNumbers = true
+        version {
+            desc = 'open source android library that helps to run chunks of code ones' +
+                    ' per application session, per time interval, version, etc'
+        }
+    }
 }

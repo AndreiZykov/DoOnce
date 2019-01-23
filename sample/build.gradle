@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "zykov.andrii.org.androiddispatcher"
+        applicationId "zykov.andrii.org.doonceexample"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1

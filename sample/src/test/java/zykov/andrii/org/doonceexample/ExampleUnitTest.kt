@@ -1,4 +1,4 @@
-package zykov.andrii.org.androiddispatcher
+package zykov.andrii.org.doonceexample
 
 import org.junit.Test
 
