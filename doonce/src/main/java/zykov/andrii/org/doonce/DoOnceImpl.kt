@@ -2,16 +2,18 @@ package zykov.andrii.org.doonce
 
 import android.content.Context
 import android.support.annotation.NonNull
+import android.support.annotation.VisibleForTesting
 import java.util.*
+import java.util.concurrent.Executor
 
 
-class DoOnceImpl : DoOnce {
+internal class DoOnceImpl : IDoOnce {
 
     companion object {
-        private const val SHARED_PREFERENCE_NAME_STRING = "org.do.once.preference"
-        private const val PER_VERSION_NAME_STRING_IDENTIFIER = "PER_VERSION_NAME_STRING_IDENTIFIER"
+        @VisibleForTesting
+        const val SHARED_PREFERENCE_NAME_STRING = "org.do.once.preference"
         private var instance: DoOnceImpl? = null
-        internal fun get(): DoOnce {
+        internal fun get(): IDoOnce {
             synchronized(DoOnceImpl) {
                 if (instance == null) {
                     synchronized(DoOnceImpl) {
@@ -25,41 +27,47 @@ class DoOnceImpl : DoOnce {
 
     private val mStateHash = HashMap<String, DoOnceState>()
 
-    override fun perVersion(ctx: Context, runnable: Runnable) {
-        ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName?.let { verionName ->
-            val identifier = "$PER_VERSION_NAME_STRING_IDENTIFIER:$verionName"
-            val performedPerThisVersion = ctx.getSharedPreferences(
-                SHARED_PREFERENCE_NAME_STRING,
-                Context.MODE_PRIVATE
-            ).getBoolean(identifier, false)
+    override fun perVersion(ctx: Context, tag: String, runnable: Runnable) {
+
+    }
+
+    override fun perVersion(ctx: Context, tag: String, executor: Executor?, runnable: Runnable) {
+        ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName?.let { versionName ->
+            val identifier = "$versionName:$tag"
+            val sharedPref = ctx.getSharedPreferences(SHARED_PREFERENCE_NAME_STRING, Context.MODE_PRIVATE)
+            val performedPerThisVersion = sharedPref.getBoolean(identifier, false)
             if (!performedPerThisVersion) {
-                val pref = ctx.getSharedPreferences(SHARED_PREFERENCE_NAME_STRING, Context.MODE_PRIVATE)
-                pref.edit().putBoolean(identifier, true).apply()
-                runnable.run()
+                sharedPref.edit().putBoolean(identifier, true).apply()
+                executor?.execute(runnable) ?: run { runnable.run() }
             }
         }
     }
 
-    override fun perVersion(ctx: Context, function: (Unit) -> Unit) {
-        ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName?.let { verionName ->
-            val identifier = "$PER_VERSION_NAME_STRING_IDENTIFIER:$verionName"
-            val performedPerThisVersion = ctx.getSharedPreferences(
-                SHARED_PREFERENCE_NAME_STRING,
-                Context.MODE_PRIVATE
-            ).getBoolean(identifier, false)
+    override fun perVersion(ctx: Context, tag: String, function: (Unit) -> Unit) {
+        ctx.packageManager.getPackageInfo(ctx.packageName, 0)?.versionName?.let { versionName ->
+            val identifier = "$versionName:$tag"
+            val sharedPref = ctx.getSharedPreferences(SHARED_PREFERENCE_NAME_STRING, Context.MODE_PRIVATE)
+            val performedPerThisVersion = sharedPref.getBoolean(identifier, false)
             if (!performedPerThisVersion) {
-                val pref = ctx.getSharedPreferences(SHARED_PREFERENCE_NAME_STRING, Context.MODE_PRIVATE)
-                pref.edit().putBoolean(identifier, true).apply()
+                sharedPref.edit().putBoolean(identifier, true).apply()
                 function(Unit)
             }
         }
     }
 
-    override fun perAppRunning(@NonNull tag: String, runnable: Runnable) {
-        perAppRunning(tag, System.currentTimeMillis(), runnable)
+    override fun perAppRun(@NonNull tag: String, runnable: Runnable) {
+        perAppRun(tag, System.currentTimeMillis(), runnable)
     }
 
-    override fun perAppRunning(tag: String, currentTime: Long, runnable: Runnable) {
+    override fun perAppRun(tag: String, executor: Executor?, runnable: Runnable) {
+        perAppRun(tag, System.currentTimeMillis(), null, runnable)
+    }
+
+    override fun perAppRun(tag: String, currentTime: Long, runnable: Runnable) {
+        perAppRun(tag, currentTime, null, runnable)
+    }
+
+    override fun perAppRun(tag: String, currentTime: Long, executor: Executor?, runnable: Runnable) {
         var run = true
         synchronized(mStateHash) {
             if (!mStateHash.containsKey(tag))
@@ -67,14 +75,16 @@ class DoOnceImpl : DoOnce {
             else
                 run = false
         }
-        run.takeIf { run }?.run { runnable.run() }
+        run.takeIf { run }?.run {
+            executor?.execute(runnable) ?: run { runnable.run() }
+        }
     }
 
-    override fun perAppRunning(tag: String, function: (Unit) -> Unit) {
-        perAppRunning(tag, System.currentTimeMillis(), function)
+    override fun perAppRun(tag: String, function: (Unit) -> Unit) {
+        perAppRun(tag, System.currentTimeMillis(), function)
     }
 
-    override fun perAppRunning(tag: String, currentTime: Long, function: (Unit) -> Unit) {
+    override fun perAppRun(tag: String, currentTime: Long, function: (Unit) -> Unit) {
         var run = true
         synchronized(mStateHash) {
             if (!mStateHash.containsKey(tag))
@@ -90,15 +100,32 @@ class DoOnceImpl : DoOnce {
     }
 
     override fun perTimeInterval(tag: String, currentTime: Long, interval: Long, runnable: Runnable) {
-        mStateHash[tag]?.let {
-            if (it.repeat && (currentTime - it.timestamp) >= it.interval) {
-                it.timestamp = currentTime; runnable.run()
-            }
-        } ?: run { runnable.run(); mStateHash[tag] = DoOnceState(currentTime, interval, true) }
+        perTimeInterval(tag, currentTime, interval, null, runnable)
     }
 
     override fun perTimeInterval(@NonNull tag: String, interval: Long, function: (Unit) -> Unit) {
         perTimeInterval(tag, System.currentTimeMillis(), interval, function)
+    }
+
+    override fun perTimeInterval(tag: String, interval: Long, executor: Executor?, runnable: Runnable) {
+        perTimeInterval(tag, System.currentTimeMillis(), interval, null, runnable)
+    }
+
+    override fun perTimeInterval(
+        tag: String,
+        currentTime: Long,
+        interval: Long,
+        executor: Executor?,
+        runnable: Runnable
+    ) {
+        mStateHash[tag]?.let {
+            if (it.repeat && (currentTime - it.timestamp) >= it.interval) {
+                it.timestamp = currentTime; executor?.execute(runnable) ?: run { runnable.run() }
+            }
+        } ?: run {
+            mStateHash[tag] = DoOnceState(currentTime, interval, true)
+            executor?.execute(runnable) ?: run { runnable.run() }
+        }
     }
 
     override fun perTimeInterval(tag: String, currentTime: Long, interval: Long, function: (Unit) -> Unit) {
@@ -108,6 +135,7 @@ class DoOnceImpl : DoOnce {
             }
         } ?: run { function(Unit); mStateHash[tag] = DoOnceState(currentTime, interval, true) }
     }
+
 
     private class DoOnceState(var timestamp: Long, val interval: Long, val repeat: Boolean)
 }

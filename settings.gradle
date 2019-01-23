@@ -1,1 +1,1 @@
-include ':app', ':doonce'
+include ':sample', ':doonce'
