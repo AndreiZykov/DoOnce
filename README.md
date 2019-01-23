@@ -7,8 +7,7 @@ Small Android library (api 14+) that helps to run chunks of code once per applic
 You'll need to have jcenter() in your list of repositories
 
 ```
-gradle:
-  compile 'org.andriizykov.doonce:doonce:0.1'
+implementation 'org.andriizykov.doonce:doonce:0.1'
 ```
 
 ## Usage
