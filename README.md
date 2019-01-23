@@ -1,6 +1,6 @@
 # DoOnce
 
-Small Android library (api 14+) that helps to run chunks of code once per application run, time interval, version
+Small Android library (api 14+) that helps to run chunks of code once per application run, time interval or version
 
 ## Installation
 
