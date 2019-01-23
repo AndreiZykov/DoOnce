@@ -61,7 +61,7 @@ DoOnce.get().perVersion(context, UNIQUE_STRING_IDENTIFIER, executor, Runnable {
 ## License
 
 ```
-Copyright 2018 Jon Finerty
+Copyright 2019 Andrii Zykov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
