@@ -14,7 +14,8 @@ implementation 'org.andriizykov.doonce:doonce:0.1.01'
 
 To perform task once per time interval
 ```
-DoOnce.get().perTimeInterval(UNIQUE_STRING_IDENTIFIER, INTERVAL_IN_MILLISECONDS) {                  
+val doOnce = DoOnce.get()
+doOnce.perTimeInterval(UNIQUE_STRING_IDENTIFIER, INTERVAL_IN_MILLISECONDS) {                  
   // do something
 }
 ```
