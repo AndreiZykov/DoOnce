@@ -22,14 +22,16 @@ DoOnce.get().perTimeInterval(UNIQUE_STRING_IDENTIFIER, INTERVAL_IN_MILLISECONDS)
 To perform task once per time interval, on a specific thread 
 ```
 val executor = Executors.newSingleThreadExecutor()
-DoOnce.get().perTimeInterval(UNIQUE_STRING_IDENTIFIER, INTERVAL_IN_MILLISECONDS, executor, Runnable {                  
+val doOnce = DoOnce.get()
+doOnce.perTimeInterval(UNIQUE_STRING_IDENTIFIER, INTERVAL_IN_MILLISECONDS, executor, Runnable {                  
   // do something
 })
 ```
 
 To perform task once per application run
 ```
-DoOnce.get().perAppRun(UNIQUE_STRING_IDENTIFIER) { 
+val doOnce = DoOnce.get()
+doOnce.perAppRun(UNIQUE_STRING_IDENTIFIER) { 
   // do something
 }
 ```
@@ -37,14 +39,16 @@ DoOnce.get().perAppRun(UNIQUE_STRING_IDENTIFIER) {
 To perform task once per application run, on a specific thread 
 ```
 val executor = Executors.newSingleThreadExecutor()
-DoOnce.get().perAppRun(UNIQUE_STRING_IDENTIFIER, executor, Runnable { 
+val doOnce = DoOnce.get()
+doOnce.perAppRun(UNIQUE_STRING_IDENTIFIER, executor, Runnable { 
   // do something
 })
 ```
 
 To perform task once per version (per update)
 ```
-DoOnce.get().perVersion(context, UNIQUE_STRING_IDENTIFIER)  { 
+val doOnce = DoOnce.get()
+doOnce.perVersion(context, UNIQUE_STRING_IDENTIFIER)  { 
   // do something
 }
 ```
@@ -52,7 +56,8 @@ DoOnce.get().perVersion(context, UNIQUE_STRING_IDENTIFIER)  {
 To perform task once per version (per update), on a specific thread 
 ```
 val executor = Executors.newSingleThreadExecutor()
-DoOnce.get().perVersion(context, UNIQUE_STRING_IDENTIFIER, executor, Runnable { 
+val doOnce = DoOnce.get()
+doOnce.perVersion(context, UNIQUE_STRING_IDENTIFIER, executor, Runnable { 
   // do something
 })
 ```
