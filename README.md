@@ -1,27 +1,12 @@
 # DoOnce
 
-under development
+Small Android library (api 14+) that helps to run chunks of code once per application run, time interval, version
 
-open source android library that helps to run chunks of code once per application session, time interval, version, etc
+## Usage
 
+to perform task once per time interval
 ```
-var index = 0
-val doOnce = DoOnceImpl.get()
-repeat(10) { doOnce.perAppRunning(ONCE_PER_APP_TAG, CURRENT_TIME) { index++ } }
-assertEquals(1, index)
-```
-
-```
-var index = 0
-val doOnce = DoOnceImpl.get()
-repeat(5) { doOnce.perTimeInterval(ONCE_PER_5_SECONDS_TAG, CURRENT_TIME, FIVE_SECONDS) { index++ } }
-doOnce.perTimeInterval(ONCE_PER_5_SECONDS_TAG, FIVE_SECONDS, FIVE_SECONDS) { index++ }
-assertEquals(2, index)
-```
-
-``` 
-var index = 0
-val doOnce = DoOnceImpl.get()
-repeat(5){ doOnce.perVersion(context){ index++ } }
-assertEquals(1, index)
+DoOnce.get().perTimeInterval(UNIQUE_STRING_IDENTIFIER, INTERVAL_IN_MILLISECONDS) {                  
+  // do something
+}
 ```
