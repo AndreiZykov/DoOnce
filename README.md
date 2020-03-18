@@ -1,5 +1,7 @@
 # DoOnce
 
+[![AndreiZykov](https://circleci.com/gh/AndreiZykov/DoOnce.svg?style=svg)](https://github.com/AndreiZykov/DoOnce)
+
 Small Android library (api 14+) that helps to run chunks of code once per application run, time interval or version
 
 ## Installation
