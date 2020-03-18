@@ -11,3 +11,11 @@ jobs:
       - checkout
       - run:
           command: ./gradlew build
+  test:
+    executor: android/android
+
+    steps:
+      - checkout
+      - run:
+          command: ./gradlew build
+          

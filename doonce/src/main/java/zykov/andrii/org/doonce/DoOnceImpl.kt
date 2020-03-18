@@ -1,29 +1,13 @@
 package zykov.andrii.org.doonce
 
 import android.content.Context
-import android.support.annotation.NonNull
-import android.support.annotation.VisibleForTesting
+import androidx.annotation.NonNull
+import androidx.annotation.VisibleForTesting
 import java.util.*
 import java.util.concurrent.Executor
 
 
 internal class DoOnceImpl : IDoOnce {
-
-    companion object {
-        @VisibleForTesting
-        const val SHARED_PREFERENCE_NAME_STRING = "org.do.once.preference"
-        private var instance: DoOnceImpl? = null
-        internal fun get(): IDoOnce {
-            synchronized(DoOnceImpl) {
-                if (instance == null) {
-                    synchronized(DoOnceImpl) {
-                        instance = DoOnceImpl()
-                    }
-                }
-            }
-            return instance!!
-        }
-    }
 
     private val mStateHash = HashMap<String, DoOnceState>()
 
@@ -99,25 +83,19 @@ internal class DoOnceImpl : IDoOnce {
         perTimeInterval(tag, System.currentTimeMillis(), interval, runnable)
     }
 
-    override fun perTimeInterval(tag: String, currentTime: Long, interval: Long, runnable: Runnable) {
-        perTimeInterval(tag, currentTime, interval, null, runnable)
-    }
-
     override fun perTimeInterval(@NonNull tag: String, interval: Long, function: (Unit) -> Unit) {
         perTimeInterval(tag, System.currentTimeMillis(), interval, function)
+    }
+
+    override fun perTimeInterval(tag: String, currentTime: Long, interval: Long, runnable: Runnable) {
+        perTimeInterval(tag, currentTime, interval, null, runnable)
     }
 
     override fun perTimeInterval(tag: String, interval: Long, executor: Executor?, runnable: Runnable) {
         perTimeInterval(tag, System.currentTimeMillis(), interval, null, runnable)
     }
 
-    override fun perTimeInterval(
-        tag: String,
-        currentTime: Long,
-        interval: Long,
-        executor: Executor?,
-        runnable: Runnable
-    ) {
+    override fun perTimeInterval(tag: String, currentTime: Long, interval: Long, executor: Executor?, runnable: Runnable) {
         mStateHash[tag]?.let {
             if (it.repeat && (currentTime - it.timestamp) >= it.interval) {
                 it.timestamp = currentTime; executor?.execute(runnable) ?: run { runnable.run() }
@@ -138,4 +116,21 @@ internal class DoOnceImpl : IDoOnce {
 
 
     private class DoOnceState(var timestamp: Long, val interval: Long, val repeat: Boolean)
+
+    companion object {
+        @VisibleForTesting
+        const val SHARED_PREFERENCE_NAME_STRING = "org.do.once.preference"
+        private var instance: DoOnceImpl? = null
+        internal fun get(): IDoOnce {
+            synchronized(DoOnceImpl) {
+                if (instance == null) {
+                    synchronized(DoOnceImpl) {
+                        instance = DoOnceImpl()
+                    }
+                }
+            }
+            return instance!!
+        }
+    }
+
 }

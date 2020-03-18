@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.Mockito
 import zykov.andrii.org.doonce.DoOnceImpl.Companion.SHARED_PREFERENCE_NAME_STRING
@@ -12,16 +12,6 @@ import java.util.concurrent.Executors
 
 
 class DoOnceTest {
-
-    companion object {
-        private const val ONCE_PER_APP_1_TAG = "ONCE_PER_APP_1_TAG"
-        private const val ONCE_PER_APP_2_TAG = "ONCE_PER_APP_2_TAG"
-        private const val ONCE_PER_5_SECONDS_1_TAG = "ONCE_PER_5_SECONDS_1_TAG"
-        private const val ONCE_PER_5_SECONDS_2_TAG = "ONCE_PER_5_SECONDS_2_TAG"
-        private const val ONCE_PER_APP_1_VERSION = "ONCE_PER_APP_1_VERSION"
-        private const val INTERVAL_5_SECONDS = 5000L
-        private const val CURRENT_TIME = 0L
-    }
 
     @Test
     fun testPerformOncePerApplication_withRunnable_shouldIncrementIndexJustOnce() {
@@ -98,4 +88,15 @@ class DoOnceTest {
         // then
         assertEquals(1, index)
     }
+
+    companion object {
+        private const val ONCE_PER_APP_1_TAG = "ONCE_PER_APP_1_TAG"
+        private const val ONCE_PER_APP_2_TAG = "ONCE_PER_APP_2_TAG"
+        private const val ONCE_PER_5_SECONDS_1_TAG = "ONCE_PER_5_SECONDS_1_TAG"
+        private const val ONCE_PER_5_SECONDS_2_TAG = "ONCE_PER_5_SECONDS_2_TAG"
+        private const val ONCE_PER_APP_1_VERSION = "ONCE_PER_APP_1_VERSION"
+        private const val INTERVAL_5_SECONDS = 5000L
+        private const val CURRENT_TIME = 0L
+    }
+
 }

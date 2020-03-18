@@ -1,13 +1,13 @@
 package zykov.andrii.org.doonceexample
 
+import android.app.Activity
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.TextView
 import zykov.andrii.org.doonce.DoOnce
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : Activity() {
 
     private var intervalCount = 0
 
