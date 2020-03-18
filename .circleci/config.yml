@@ -1,16 +1,26 @@
-version: 2
+version: 2.1
+
+
+orbs:
+ android: circleci/android@0.2.0
 
 jobs:
   build:
+    working_directory: ~/
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-28
+    executor: android/android
+
     steps:
       - checkout
       - run:
           command: ./gradlew build
   test:
+    working_directory: ~/
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-28
+    executor: android/android
+
     steps:
       - checkout
       - run:
