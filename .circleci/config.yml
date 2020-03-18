@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/android:api-28-alpha
-    executor: android/android
+    executor: docker
         
     steps:
       - checkout
@@ -13,7 +13,7 @@ jobs:
   test:
     docker:
       - image: circleci/android:api-28-alpha
-    executor: android/android
+    executor: docker
 
     steps:
       - checkout
