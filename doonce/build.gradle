@@ -88,27 +88,31 @@ artifacts {
     archives sourcesJar
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+if (project.rootProject.file('local.properties').exists()) {
 
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = 'maven'
-        name = 'doonce'
-        desc = 'open source android library that helps to run chunks of code ones' +
-                ' per application session, per time interval, version, etc'
-        vcsUrl = 'https://github.com/AndreiZykov/DoOnce'
-        licenses = ["Apache-2.0"]
-        dryRun = false
-        publish = true
-        override = false
-        publicDownloadNumbers = true
-        version {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    bintray {
+        user = properties.getProperty("bintray.user")
+        key = properties.getProperty("bintray.apikey")
+        configurations = ['archives']
+        pkg {
+            repo = 'maven'
+            name = 'doonce'
             desc = 'open source android library that helps to run chunks of code ones' +
                     ' per application session, per time interval, version, etc'
+            vcsUrl = 'https://github.com/AndreiZykov/DoOnce'
+            licenses = ["Apache-2.0"]
+            dryRun = false
+            publish = true
+            override = false
+            publicDownloadNumbers = true
+            version {
+                desc = 'open source android library that helps to run chunks of code ones' +
+                        ' per application session, per time interval, version, etc'
+            }
         }
     }
+
 }

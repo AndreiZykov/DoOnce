@@ -6,7 +6,6 @@ orbs:
 
 jobs:
   build:
-    working_directory: ~/
     docker:
       - image: circleci/android:api-28
     executor: android/android
@@ -16,7 +15,6 @@ jobs:
       - run:
           command: ./gradlew build
   test:
-    working_directory: ~/
     docker:
       - image: circleci/android:api-28
     executor: android/android
